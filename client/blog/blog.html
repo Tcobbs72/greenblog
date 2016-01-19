@@ -1,0 +1,182 @@
+<template name="blog">
+    <div class="blog-container text-center">
+        <div class="row container">
+            <!--<div class="post-options-container">-->
+                <!--{{> filters}}-->
+                <!--{{> sorters}}-->
+                <!--{{> options}}-->
+            <!--</div>-->
+            <div class="hide-scrollbar border-left">
+                <div class="posts-container">
+                    <div class="row">
+                        <div class="input-group blog-post-container">
+                            <span class="input-group-addon" id="basic-addon1"><i class="fa fa-pencil"></i></span>
+                            <input type="text" class="new-post-js form-control" placeholder="Create Post" aria-describedby="basic-addon1">
+                            <input type="checkbox" value="None" class="css-checkbox" id="post-anonymous" name="check" />
+                            <label for="post-anonymous" class="css-label lite-green-check"></label>
+                            <label> Post anonymously </label>
+                            <div class="dropdown post-options-container pull-right">
+                                <button class="btn btn-unstyled dropdown-toggle" type="button" data-toggle="dropdown">
+                                    <span>Options <i class="fa fa-cogs"></i></span>
+                                </button>
+                                <ul class="dropdown-menu options-menu pull-right">
+                                    {{> filters}}
+                                    {{> sorters}}
+                                    {{> options}}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    {{#if postsExist}}
+                        {{#each posts}}
+                            {{> blogPost}}
+                        {{/each}}
+                    {{else}}
+                        <h3><b><i>There are no posts! :(</i></b></h3>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template name="filters">
+    <div class="text-left">
+        <div><h3 style="margin-bottom: 0.7em; color: #2C6700;"><u>Filters</u></h3></div>
+        <li><div class="input-group filter-container">
+            <input type="checkbox" value="None" class="css-checkbox filter-box" id="show-all" name="check" />
+            <label for="show-all" class="css-label lite-green-check"></label>
+            <label class="filters-label">Show who I subscribe to <i class="fa fa-users"></i></label>
+        </div></li>
+    </div>
+</template>
+
+<template name="sorters">
+    <div class="text-left">
+        <div><h3 style="margin-bottom: 0.7em; color: #2C6700;"><u>Sort By</u></h3></div>
+        <li><div class="input-group sorter-container">
+            <input type="checkbox" value="None" class="css-checkbox sort-box" id="date-ascending" data-sort="date" data-value="1" name="check" />
+            <label for="date-ascending" class="css-label lite-green-check"></label>
+            <label class="sort-label">Date <i class="fa fa-caret-square-o-up"></i></label>
+        </div></li>
+        <li><div class="input-group sorter-container">
+            <input type="checkbox" value="None" class="css-checkbox sort-box" id="date-descending" data-sort="date" data-value="-1" name="check" />
+            <label for="date-descending" class="css-label lite-green-check"></label>
+            <label class="sort-label">Date <i class="fa fa-caret-square-o-down"></i></label>
+        </div></li>
+        <li><div class="input-group sorter-container">
+            <input type="checkbox" value="None" class="css-checkbox sort-box" id="likes" data-sort="numLikes"  data-value="-1" name="check" />
+            <label for="likes" class="css-label lite-green-check"></label>
+            <label class="sort-label"># of likes <i class="fa fa-thumbs-up"></i></label>
+        </div></li>
+        <li><div class="input-group sorter-container">
+            <input type="checkbox" value="None" class="css-checkbox sort-box" id="dislikes" data-sort="numDislikes"  data-value="-1" name="check" />
+            <label for="dislikes" class="css-label lite-green-check"></label>
+            <label class="sort-label"># of dislikes <i class="fa fa-thumbs-down"></i></label>
+        </div></li>
+    </div>
+</template>
+
+<template name="options">
+    <div class="text-left">
+        <div><h3 style="margin-bottom: 0.7em; color: #2C6700;"><u>Options</u></h3></div>
+        <li><div class="input-group sorter-container">
+            <input type="checkbox" value="None" class="css-checkbox opt-box" id="disable-updates" name="check" />
+            <label for="disable-updates" class="css-label lite-green-check"></label>
+            <label class="opts-label">{{updatesVerbiage}} <i class="{{updatesClass}}"></i></label>
+        </div></li>
+    </div>
+</template>
+
+<template name="blogPost">
+    <div class="row post" id="{{_id}}">
+        <div class="col-md-9">
+            {{#if anonymous}}
+                <div class="author"><b>{{formatAuthor this}}</b></div>
+            {{else}}
+                <a href="/account/{{author}}"><div class="author"><b>{{formatAuthor this}}</b></div></a>
+            {{/if}}
+            <div class="post-text"><b>{{text}}</b></div>
+            <div class="post-comments">
+                {{#if commentsExist comments}}
+                    {{#each getComments comments}}
+                        {{> comment}}
+                    {{/each}}
+                {{else}}
+                    <h4><b><i>There are no comments yet! Be the first one</i></b></h4>
+                {{/if}}
+            </div>
+            <div class="row">
+                <div class="input-group add-comment-container">
+                    <input type="text" class="add-comment-js form-control" placeholder="Add Comment" data-postId="{{_id}}">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 postDate">
+            <div>{{formatDate date}}</div>
+            <div>
+                {{numLikes}} <a href="#" class="like-post {{likedPost _id}}" data-postId="{{_id}}"><i class="fa fa-thumbs-up"></i></a>
+                {{numDislikes}} <a href="#" class="dislike-post {{dislikedPost _id}}" data-postId="{{_id}}"><i class="fa fa-thumbs-down"></i></a>
+                {{numComments comments}} <a href="#" class="show-comments" data-postId="{{_id}}"><i class="fa fa-comment"></i></a>
+                <div class="dropdown post-options">
+                    <button class="btn btn-unstyled dropdown-toggle" type="button" data-toggle="dropdown">
+                        <span><i class="fa fa-cogs"></i></span>
+                    </button>
+                    <ul class="dropdown-menu pull-right">
+                        {{#if iPostedThis author}}
+                            <li><a href="#" class="delete-post" data-postId="{{_id}}">
+                                <i class="fa fa-times"></i> Delete this post
+                            </a></li>
+                        {{else}}
+                            <li><a href="#" class="report-post" data-postId="{{_id}}">
+                                <i class="fa fa-flag"></i> Report this post
+                            </a></li>
+                            {{#unless anonymous}}
+                                <li><a href="#" class="block-user" data-author="{{author}}">
+                                    <i class="fa fa-ban"></i> Block this user
+                                </a></li>
+                                <li><a href="#" class="subscribe-user" data-author="{{author}}">
+                                    <i class="fa fa-check"></i> Subscribe to this user
+                                </a></li>
+                            {{/unless}}
+                        {{/if}}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template name="comment">
+    <div class="row comment" id="{{_id}}">
+        <div class="col-md-8">
+            {{#if anonymous}}
+                <div class="author"><b>{{formatAuthor this}}</b></div>
+            {{else}}
+                <a href="/account/{{author}}"><div class="author"><b>{{formatAuthor this}}</b></div></a>
+            {{/if}}
+            <div class="comment-text">{{text}}</div>
+        </div>
+        <div class="col-md-4 commentDate">
+            <div>
+                {{formatDate date}}
+                <div class="dropdown post-options">
+                    <button class="btn btn-unstyled dropdown-toggle" type="button" data-toggle="dropdown">
+                        <span> <i class="fa fa-cogs"></i></span>
+                    </button>
+                    <ul class="dropdown-menu pull-right">
+                        {{#if iPostedThis author}}
+                            <li><a href="#" class="delete-comment" data-comment="{{_id}}">
+                                <i class="fa fa-times"></i> Delete this comment
+                            </a></li>
+                        {{else}}
+                            <li><a href="#" class="report-comment" data-comment="{{_id}}">
+                                <i class="fa fa-flag"></i> Report this comment
+                            </a></li>
+                        {{/if}}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

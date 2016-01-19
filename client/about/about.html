@@ -1,0 +1,18 @@
+<template name="about">
+    <div class="about-image">
+        <div class="about-info">
+            <div class="row text-center">
+                <h2><b>We all create waste on Earth. <br><br>
+                    Figure out how much waste you create and learn from others on ways how to reduce your waste.<br><br>
+                    Email us questions and comments on how we could improve the site
+                </b>
+                </h2>
+            </div>
+        </div>
+        {{#if notLoggedIn}}
+        <div class="sign-up text-center">
+            <a href="/signup" class="btn signup-btn">Create Free Account</a>
+        </div>
+        {{/if}}
+    </div>
+</template>
