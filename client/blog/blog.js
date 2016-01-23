@@ -11,6 +11,13 @@ Template.blog.onCreated(function(){
     });
 });
 
+Template.newPost.onCreated(function(){
+    var self = this;
+    self.autorun(function(){
+        self.subscribe("topics");
+    });
+});
+
 Template.blog.helpers({
     posts: function(){
         return Posts.find(query.get(), {reactive: react.get(), sort: sort.get()}).fetch();
@@ -20,35 +27,54 @@ Template.blog.helpers({
     }
 });
 
-Template.blog.events({
+Template.newPost.onRendered(function(){
+   Meteor.setTimeout(function(){
+       //$(".new-post-topic-js").val("").chosen({}).trigger("chosen:updated");
+   }, 100);
+});
+
+Template.newPost.helpers({
+   topics: function(){
+       return Topics.find({}).fetch();
+   }
+});
+
+Template.newPost.events({
     "keypress .new-post-js": function(e){
         if(e.keyCode===13 || e.which === 13){
             var post = $(".new-post-js").val().trim();
+            var topic = $(".new-post-topic-js").val();
             if(post && post!==""){
-                var anon = $("#post-anonymous").prop("checked");
-                Meteor.call("newPost", post, anon, function(err, res){
-                    if(err) $.bootstrapGrowl(err.message, {align: "center", width: "auto", type: "danger", delay: 3000});
-                    else{
-                        $(".new-post-js").val("");
-                        if(!react.get()) $.bootstrapGrowl("Post successfully submitted. Resume updates to see post", {align: "center", width: "auto", type: "info", delay: 5000});
-                    }
-                })
+                if(!topic || topic==="") $.bootstrapGrowl("Must select a topic", {align: "center", width: "auto", type: "danger", delay: 3000});
+                else{
+                    var anon = $("#post-anonymous").prop("checked");
+                    Meteor.call("newPost", post, topic, anon, function(err, res){
+                        if(err) $.bootstrapGrowl(err.message, {align: "center", width: "auto", type: "danger", delay: 3000});
+                        else{
+                            $(".new-post-js").val("");
+                            $(".new-post-topic-js").val("");
+                            if(react && !react.get()) $.bootstrapGrowl("Post successfully submitted. Resume updates to see post", {align: "center", width: "auto", type: "info", delay: 5000});
+                        }
+                    })
+                }
             }
             else $.bootstrapGrowl("Not a valid post", {align: "center", width: "auto", type: "danger", delay: 3000});
         }
-    },
+    }
+});
+
+Template.blogOptions.events({
     "click .options-menu": function(e){
-        console.log("clicked");
         //e.preventDefault();
         e.stopPropagation();
     }
 });
 
 Template.blogPost.helpers({
-   formatDate: function(d){
-       return moment(d).format("MMM Do, YYYY - hh:mm:ss a")
-   }
-    , formatAuthor: function(post){
+   //formatDate: function(d){
+   //    return moment(d).format("MMM Do, YYYY - hh:mm:ss a")
+   //}
+    formatAuthor: function(post){
         return post.anonymous ? "Anonymous" : post.author;
     }
     , likedPost: function(postId){
@@ -152,8 +178,13 @@ Template.blogPost.events({
     , "click .subscribe-user": function(e){
         e.preventDefault();
         var author = $(e.target).data("author");
-        Meteor.call("subcribeUser", author, function(err, res){
+        Meteor.call("subscribeUser", author, function(err, res){
             if(err) $.bootstrapGrowl(err.message, {align: "center", width: "auto", type: "danger", delay: 3000});
+            else {
+                var s = Session.get("selectedAccountSubscribers") || [];
+                s.push(Meteor.user().username);
+                Session.set("selectedAccountSubscribers", s);
+            }
         })
     }
     , "keypress .add-comment-js": function(e){
@@ -181,10 +212,10 @@ Template.blogPost.events({
 Template.comment.helpers({
     iPostedThis: function(author){
         return Meteor.user() && author===Meteor.user().username;
-    },
-    formatDate: function(d){
-        return moment(d).format("MMM Do, YYYY - hh:mm:ss a")
     }
+    //formatDate: function(d){
+    //    return moment(d).format("MMM Do, YYYY - hh:mm:ss a")
+    //}
     , formatAuthor: function(comment){
         return comment.anonymous ? "Anonymous" : comment.author;
     }
@@ -214,11 +245,24 @@ Template.comment.events({
     }
 });
 
+Template.filters.helpers({
+    topics: function(){
+        return Topics.find({}).fetch();
+    }
+});
+
 Template.filters.events({
     "click #show-all": function(e){
         var q = query.get();
         if($(e.target).prop("checked")) _.extend(q, {author: {$in: Meteor.user().profile.subscribed}});
         else delete q["author"];
+        query.set(q);
+    },
+    "change .filterByTopic": function(e){
+        var topic = $(".filterByTopic").val();
+        var q = query.get();
+        if(topic && topic!=="") _.extend(q, {topic: topic});
+        else delete q["topic"];
         query.set(q);
     }
 });

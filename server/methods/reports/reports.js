@@ -39,11 +39,5 @@ Meteor.methods({
                 break;
         }
         Reports.remove({_id: user.reportid});
-    },
-    getUser: function(username){
-        return Meteor.users.findOne({username: username});
-    },
-    getUserById: function(id){
-        return Meteor.users.findOne({_id: id});
     }
 });

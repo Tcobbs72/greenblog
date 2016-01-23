@@ -17,7 +17,7 @@
                     <a href="/reports" class="border-right {{selected "/reports"}}">Reports</a>
                 {{/if}}
                 <a href="/account/{{username}}" class="no-border {{selected "/account"}}">
-                    {{#if hasNotifications}}<i class="fa fa-exclamation"></i>{{/if}}
+                    {{#if hasNotifications}}<span class="notification-alert">{{numNotifications}}</span>{{/if}}
                     Account
                 </a>
             {{else}}

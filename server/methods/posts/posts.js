@@ -1,5 +1,5 @@
 Meteor.methods({
-    "newPost": function(post, anonymous){
+    "newPost": function(post, topic, anonymous){
         var user = Meteor.user();
         if(user){
             var date = new Date();
@@ -9,7 +9,7 @@ Meteor.methods({
             if(recent>=5){
                 throw new Meteor.Error(403, "Excessive posting. Please wait to post again.");
             }
-            else Posts.insert({text: post, author: user.username, anonymous: anonymous, date: new Date()});
+            else Posts.insert({text: post, topic: topic, author: user.username, anonymous: anonymous, date: new Date()});
         }
     },
     "removePost": function(postId){
@@ -30,7 +30,7 @@ Meteor.methods({
             }
         }
     },
-    "subcribeUser": function(author){
+    "subscribeUser": function(author){
         var user = Meteor.user();
         if(user){
             if(_.find(user.profile.subscribed, function(s){return s===author;})){
@@ -39,9 +39,22 @@ Meteor.methods({
             else if(_.find(user.profile.blocked, function(b){return b===author;})){
                 throw new Meteor.Error("You cannot subscribe to someone that you have blocked");
             }
+            else if(user.profile.subscribed.length>=100){
+                throw new Meteor.Error("You have reached the limit of people you can subscribe to");
+            }
             else{
+                var text = user.username + " just subscribed to you!";
+                var userId = Meteor.users.findOne({username: author})._id;
+                var date = new Date();
+                Notifications.insert({text: text, userId: userId, date: date});
                 Meteor.users.update({_id: Meteor.userId()}, {$push: {"profile.subscribed": author}});
             }
+        }
+    },
+    "unsubscribeUser": function(author){
+        var user = Meteor.user();
+        if(user){
+            Meteor.users.update({_id: Meteor.userId()}, {$pull: {"profile.subscribed": author}});
         }
     },
     "blockUser": function(author){
@@ -55,6 +68,7 @@ Meteor.methods({
             }
             else{
                 Meteor.users.update({_id: Meteor.userId()}, {$push: {"profile.blocked": author}});
+                Meteor.users.update({username: author}, {$pull: {"profile.subscribed": user.username}});
             }
         }
     },
@@ -109,6 +123,17 @@ Meteor.methods({
             if(increase){
                 Meteor.users.update({_id: user._id}, {$push: {"profile.likes": postId}});
                 Posts.update({_id: postId}, {$push: {likes: user.username}, $inc: {numLikes: 1}});
+
+                var post = Posts.findOne({_id: postId});
+                if(post && post.author!==user.username){
+                    var author = post.author;
+                    var text = user.username + " just liked your post! ... '";
+                    var postText = post.text.length>20 ? post.text.substr(0, 20) + "..." : post.text;
+                    var date = new Date();
+                    if(!Notifications.findOne({text: text+postText+"'", userId: Meteor.users.findOne({username: author})._id})) {
+                        Notifications.insert({text: text+postText+"'", date: date, userId: Meteor.users.findOne({username: author})._id});
+                    }
+                }
             }
             else{
                 Meteor.users.update({_id: user._id}, {$pull: {"profile.likes": postId}});

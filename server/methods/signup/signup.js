@@ -15,6 +15,9 @@ Meteor.methods({
        if(!username || username===""){
            validate.invalids.push({select: ".username-js", message: "Must provide a valid username", placeholder: "Username"});
        }
+       else if(username.length>15){
+           validate.invalids.push({select: ".username-js", message: "Username must be less than 15 characters", placeholder: "Username"});
+       }
        else if(Meteor.users.findOne({username: username})){
            validate.invalids.push({select: ".username-js", message: "Username already exists", placeholder: "Username"});
        }

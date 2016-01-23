@@ -1,32 +1,10 @@
 <template name="blog">
     <div class="blog-container text-center">
         <div class="row container">
-            <!--<div class="post-options-container">-->
-                <!--{{> filters}}-->
-                <!--{{> sorters}}-->
-                <!--{{> options}}-->
-            <!--</div>-->
             <div class="hide-scrollbar border-left">
                 <div class="posts-container">
-                    <div class="row">
-                        <div class="input-group blog-post-container">
-                            <span class="input-group-addon" id="basic-addon1"><i class="fa fa-pencil"></i></span>
-                            <input type="text" class="new-post-js form-control" placeholder="Create Post" aria-describedby="basic-addon1">
-                            <input type="checkbox" value="None" class="css-checkbox" id="post-anonymous" name="check" />
-                            <label for="post-anonymous" class="css-label lite-green-check"></label>
-                            <label> Post anonymously </label>
-                            <div class="dropdown post-options-container pull-right">
-                                <button class="btn btn-unstyled dropdown-toggle" type="button" data-toggle="dropdown">
-                                    <span>Options <i class="fa fa-cogs"></i></span>
-                                </button>
-                                <ul class="dropdown-menu options-menu pull-right">
-                                    {{> filters}}
-                                    {{> sorters}}
-                                    {{> options}}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                    {{> blogOptions}}
+                    {{> newPost}}
                     {{#if postsExist}}
                         {{#each posts}}
                             {{> blogPost}}
@@ -40,14 +18,60 @@
     </div>
 </template>
 
+<template name="newPost">
+    <div class="row">
+        <div class="input-group blog-post-container">
+            <span class="input-group-addon" id="basic-addon1"><i class="fa fa-pencil"></i></span>
+            <input type="text" class="new-post-js form-control" placeholder="Create Post" aria-describedby="basic-addon1">
+            <select class="new-post-topic-js">
+                <option value="" disabled> Select A Topic </option>
+                {{#each topics}}
+                    <option value="{{name}}">{{name}}</option>
+                {{/each}}
+            </select>
+            <input type="checkbox" value="None" class="css-checkbox pull-right" id="post-anonymous" name="check" />
+            <label for="post-anonymous" class="css-label lite-green-check"></label>
+            <label> Post anonymously </label>
+        </div>
+    </div>
+</template>
+
+<template name="blogOptions">
+    <div class="row">
+        <div class="dropdown post-options-container pull-right">
+            <button class="btn btn-unstyled dropdown-toggle" type="button" data-toggle="dropdown">
+                <span>Options <i class="fa fa-cogs"></i></span>
+            </button>
+            <ul class="dropdown-menu options-menu pull-right">
+                {{> filters}}
+                {{> sorters}}
+                {{> options}}
+            </ul>
+        </div>
+    </div>
+</template>
+
 <template name="filters">
     <div class="text-left">
-        <div><h3 style="margin-bottom: 0.7em; color: #2C6700;"><u>Filters</u></h3></div>
-        <li><div class="input-group filter-container">
+        <div><h3 style="margin-bottom: 0.5em; color: #2C6700;"><u>Filters</u></h3></div>
+        <li>
+            <div class="input-group filter-container">
             <input type="checkbox" value="None" class="css-checkbox filter-box" id="show-all" name="check" />
             <label for="show-all" class="css-label lite-green-check"></label>
             <label class="filters-label">Show who I subscribe to <i class="fa fa-users"></i></label>
-        </div></li>
+            </div>
+        </li>
+        <li>
+            <div class="filter-container">
+                <select class="filterByTopic">
+                    <option value=""> Select A Topic </option>
+                    {{#each topics}}
+                        <option value="{{name}}">{{name}}</option>
+                    {{/each}}
+                </select>
+                <label class="filters-label">Filter By Topic</label>
+            </div>
+        </li>
     </div>
 </template>
 
@@ -90,11 +114,11 @@
 
 <template name="blogPost">
     <div class="row post" id="{{_id}}">
-        <div class="col-md-9">
+        <div class="col-md-8">
             {{#if anonymous}}
                 <div class="author"><b>{{formatAuthor this}}</b></div>
             {{else}}
-                <a href="/account/{{author}}"><div class="author"><b>{{formatAuthor this}}</b></div></a>
+                <a href="/account/{{author}}" class="author"><b>{{formatAuthor this}}</b></a>
             {{/if}}
             <div class="post-text"><b>{{text}}</b></div>
             <div class="post-comments">
@@ -112,7 +136,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3 postDate">
+        <div class="col-md-4 postDate">
             <div>{{formatDate date}}</div>
             <div>
                 {{numLikes}} <a href="#" class="like-post {{likedPost _id}}" data-postId="{{_id}}"><i class="fa fa-thumbs-up"></i></a>
@@ -143,6 +167,7 @@
                     </ul>
                 </div>
             </div>
+            <div class="post-topic">Topic - {{topic}}</div>
         </div>
     </div>
 </template>
@@ -153,7 +178,7 @@
             {{#if anonymous}}
                 <div class="author"><b>{{formatAuthor this}}</b></div>
             {{else}}
-                <a href="/account/{{author}}"><div class="author"><b>{{formatAuthor this}}</b></div></a>
+                <a href="/account/{{author}}" class="author"><b>{{formatAuthor this}}</b></a>
             {{/if}}
             <div class="comment-text">{{text}}</div>
         </div>
