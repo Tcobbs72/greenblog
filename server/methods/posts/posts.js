@@ -46,7 +46,7 @@ Meteor.methods({
                 var text = user.username + " just subscribed to you!";
                 var userId = Meteor.users.findOne({username: author})._id;
                 var date = new Date();
-                Notifications.insert({text: text, userId: userId, date: date});
+                if(!Notifications.findOne({userId: userId, text: text})) Notifications.insert({text: text, userId: userId, date: date});
                 Meteor.users.update({_id: Meteor.userId()}, {$push: {"profile.subscribed": author}});
             }
         }

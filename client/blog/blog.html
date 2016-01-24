@@ -114,7 +114,7 @@
 
 <template name="blogPost">
     <div class="row post" id="{{_id}}">
-        <div class="col-md-8">
+        <div class="col-md-28">
             {{#if anonymous}}
                 <div class="author"><b>{{formatAuthor this}}</b></div>
             {{else}}
@@ -136,7 +136,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 postDate">
+        <div class="col-md-8 postDate">
             <div>{{formatDate date}}</div>
             <div>
                 {{numLikes}} <a href="#" class="like-post {{likedPost _id}}" data-postId="{{_id}}"><i class="fa fa-thumbs-up"></i></a>
@@ -174,7 +174,7 @@
 
 <template name="comment">
     <div class="row comment" id="{{_id}}">
-        <div class="col-md-8">
+        <div class="col-md-28">
             {{#if anonymous}}
                 <div class="author"><b>{{formatAuthor this}}</b></div>
             {{else}}
@@ -182,7 +182,7 @@
             {{/if}}
             <div class="comment-text">{{text}}</div>
         </div>
-        <div class="col-md-4 commentDate">
+        <div class="col-md-8 commentDate">
             <div>
                 {{formatDate date}}
                 <div class="dropdown post-options">
