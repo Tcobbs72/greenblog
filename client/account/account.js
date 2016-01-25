@@ -67,9 +67,14 @@ Template.account.events({
     "click .block-user": function(e){
         bootbox.confirm("Are you sure you want to block this user?", function(res){
             if(res){
-                var username = $(e.target).data("username");
+                var username = $(e.target).parent().data("username");
                 Meteor.call("blockUser", username, function(err, res){
                     if(err) $.bootstrapGrowl(err.message, {align: "center", width: "auto", type: "danger", delay: 2000});
+                    else{
+                        var s = Session.get("selectedAccountSubscribers") || [];
+                        s = _.filter(s, function(sub){return sub.username!==username});
+                        Session.set("selectedAccountSubscribers", s);
+                    }
                 });
             }
         })
@@ -79,6 +84,16 @@ Template.account.events({
             if(res){
                 var username = $(e.target).parent().data("username");
                 Meteor.call("unsubscribeUser", username, function(err, res){
+                    if(err) $.bootstrapGrowl(err.message, {align: "center", width: "auto", type: "danger", delay: 2000});
+                });
+            }
+        })
+    },
+    "click .unblock-user": function(e){
+        bootbox.confirm("Are you sure you want to unblock this user?", function(res){
+            if(res){
+                var username = $(e.target).parent().data("username");
+                Meteor.call("unblockUser", username, function(err, res){
                     if(err) $.bootstrapGrowl(err.message, {align: "center", width: "auto", type: "danger", delay: 2000});
                 });
             }

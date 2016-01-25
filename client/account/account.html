@@ -31,10 +31,10 @@
                     {{> blogPost}}
                 {{/each}}
             </div>
-            <div class="col-md-8 border-left">
+            <div class="col-md-8">
                 <div class="col-md-18" style="padding: 0; overflow-x: hidden">
                     <h2 class="text-center section-header">Subscribers</h2>
-                    <div class="subscribe-container">
+                    <div class="subscribe-container border-left">
                         {{#each subscribers}}
                             <div class="subscribe-user-container">
                                 <a href="/account/{{username}}" class="subscriber-user">{{username}}</a>
@@ -44,10 +44,23 @@
                             </div>
                         {{/each}}
                     </div>
+                    {{#if myProfile}}
+                    <h2 class="text-center section-header">Blocked</h2>
+                    <div class="blocked-container border-left">
+                        {{#with account}}
+                            {{#each profile.blocked}}
+                                <div class="blocked-user-container">
+                                    <span class="blocked-user">{{this}}</span>
+                                    <a href="#" class="unblock-user" data-username="{{this}}"><i class="fa fa-undo"></i></a>
+                                </div>
+                            {{/each}}
+                        {{/with}}
+                    </div>
+                    {{/if}}
                 </div>
                 <div class="col-md-18" style="padding: 0; overflow-x: hidden">
                     <h2 class="text-center section-header">Subscribed</h2>
-                    <div class="subscribe-container">
+                    <div class="subscribe-container border-left">
                         {{#with account}}
                             {{#each profile.subscribed}}
                                 <div class="subscribe-user-container">
