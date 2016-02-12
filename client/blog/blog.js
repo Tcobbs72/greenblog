@@ -1,8 +1,7 @@
-var react = new ReactiveVar(true);
-var query = new ReactiveVar({});
-var sort = new ReactiveVar({date: -1});
-
 Template.blog.onCreated(function(){
+    Session.set("blogQuery", {});
+    Session.set("blogSort", {date: -1});
+    Session.set("blogReact", true);
     var self = this;
     self.autorun(function(){
         self.subscribe("posts", Meteor.user());
@@ -11,44 +10,69 @@ Template.blog.onCreated(function(){
     });
 });
 
+Template.newPost.onCreated(function(){
+    var self = this;
+    self.autorun(function(){
+        self.subscribe("topics");
+    });
+});
+
 Template.blog.helpers({
     posts: function(){
-        return Posts.find(query.get(), {reactive: react.get(), sort: sort.get()}).fetch();
+        var query = Session.get("blogQuery") || {};
+        var react = Session.get("blogReact") || false;
+        var sort = Session.get("blogSort") || {date: -1};
+        return Posts.find(query, {reactive: react, sort: sort}).fetch();
     },
     postsExist: function(){
-        return Posts.find(query.get(), {reactive: react.get()}).fetch().length>0;
+        var query = Session.get("blogQuery") || {};
+        var react = Session.get("blogReact") || false;
+        return Posts.find(query, {reactive: react}).fetch().length>0;
     }
 });
 
-Template.blog.events({
+Template.newPost.onRendered(function(){
+   Meteor.setTimeout(function(){
+       //$(".new-post-topic-js").val("").chosen({}).trigger("chosen:updated");
+   }, 100);
+});
+
+Template.newPost.helpers({
+   topics: function(){
+       return Topics.find({}).fetch();
+   }
+});
+
+Template.newPost.events({
     "keypress .new-post-js": function(e){
         if(e.keyCode===13 || e.which === 13){
             var post = $(".new-post-js").val().trim();
+            var topic = $(".new-post-topic-js").val();
             if(post && post!==""){
-                var anon = $("#post-anonymous").prop("checked");
-                Meteor.call("newPost", post, anon, function(err, res){
-                    if(err) $.bootstrapGrowl(err.message, {align: "center", width: "auto", type: "danger", delay: 3000});
-                    else{
-                        $(".new-post-js").val("");
-                        if(!react.get()) $.bootstrapGrowl("Post successfully submitted. Resume updates to see post", {align: "center", width: "auto", type: "info", delay: 5000});
-                    }
-                })
+                if(!topic || topic==="") $.bootstrapGrowl("Must select a topic", {align: "center", width: "auto", type: "danger", delay: 3000});
+                else{
+                    var anon = $("#post-anonymous").prop("checked");
+                    Meteor.call("newPost", post, topic, anon, function(err, res){
+                        if(err) $.bootstrapGrowl(err.message, {align: "center", width: "auto", type: "danger", delay: 3000});
+                        else{
+                            $(".new-post-js").val("");
+                            $(".new-post-topic-js").val("");
+                            var react = Session.get("blogReact");
+                            if(!react) $.bootstrapGrowl("Post successfully submitted. Resume updates to see post", {align: "center", width: "auto", type: "info", delay: 5000});
+                        }
+                    })
+                }
             }
             else $.bootstrapGrowl("Not a valid post", {align: "center", width: "auto", type: "danger", delay: 3000});
         }
-    },
-    "click .options-menu": function(e){
-        console.log("clicked");
-        //e.preventDefault();
-        e.stopPropagation();
     }
 });
 
 Template.blogPost.helpers({
-   formatDate: function(d){
-       return moment(d).format("MMM Do, YYYY - hh:mm:ss a")
-   }
-    , formatAuthor: function(post){
+   //formatDate: function(d){
+   //    return moment(d).format("MMM Do, YYYY - hh:mm:ss a")
+   //}
+    formatAuthor: function(post){
         return post.anonymous ? "Anonymous" : post.author;
     }
     , likedPost: function(postId){
@@ -65,10 +89,14 @@ Template.blogPost.helpers({
     }
     , commentsExist: function(comments){
         if(comments.length===0) return false;
-        else return Comments.find({_id: {$in: comments}}, {reactive: react.get()}).fetch().length;
+        else{
+            var react = Session.get("blogReact") || false;
+            return Comments.find({_id: {$in: comments}}, {reactive: react}).fetch().length;
+        }
     }
     , getComments: function(comments){
-        return Comments.find({_id: {$in: comments}}, {sort: {date: 1}, reactive: react.get()}).fetch();
+        var react = Session.get("blogReact") || false;
+        return Comments.find({_id: {$in: comments}}, {sort: {date: 1}, reactive: react}).fetch();
     }
 });
 
@@ -152,8 +180,13 @@ Template.blogPost.events({
     , "click .subscribe-user": function(e){
         e.preventDefault();
         var author = $(e.target).data("author");
-        Meteor.call("subcribeUser", author, function(err, res){
+        Meteor.call("subscribeUser", author, function(err, res){
             if(err) $.bootstrapGrowl(err.message, {align: "center", width: "auto", type: "danger", delay: 3000});
+            else {
+                var s = Session.get("selectedAccountSubscribers") || [];
+                s.push(Meteor.user().username);
+                Session.set("selectedAccountSubscribers", s);
+            }
         })
     }
     , "keypress .add-comment-js": function(e){
@@ -176,84 +209,4 @@ Template.blogPost.events({
             }
         }
     }
-});
-
-Template.comment.helpers({
-    iPostedThis: function(author){
-        return Meteor.user() && author===Meteor.user().username;
-    },
-    formatDate: function(d){
-        return moment(d).format("MMM Do, YYYY - hh:mm:ss a")
-    }
-    , formatAuthor: function(comment){
-        return comment.anonymous ? "Anonymous" : comment.author;
-    }
-});
-
-Template.comment.events({
-    "click .delete-comment": function(e){
-        var comment = $(e.target).hasClass("fa") ? $(e.target).parent().data("comment") : $(e.target).data("comment");
-        if(comment){
-            Meteor.call("removeComment", comment, function(err, res){
-                if(err) $.bootstrapGrowl(err.message, {align: "center", width: "auto", type: "danger", delay: 3000});
-            })
-        }
-    },
-    "click .report-comment": function(e){
-        e.preventDefault();
-        bootbox.prompt("Why do you want to report this comment? All reports are sent anonymously.", function(res){
-            if(res && res.trim()!==""){
-                var id = $(e.target).data("comment");
-                Meteor.call("reportPost", id, res, "Comment", function(err, res){
-                    if(err) $.bootstrapGrowl(err.message, {align: "center", width: "auto", type: "danger", delay: 3000});
-                    else $.bootstrapGrowl("Your report has been noted. Our admins will review this post and make consequences accordingly", {align: "center", width: "auto", type: "info", delay: 4000});
-                })
-            }
-            else $.bootstrapGrowl("No report sent", {align: "center", width: "auto", type: "info", delay: 3000});
-        });
-    }
-});
-
-Template.filters.events({
-    "click #show-all": function(e){
-        var q = query.get();
-        if($(e.target).prop("checked")) _.extend(q, {author: {$in: Meteor.user().profile.subscribed}});
-        else delete q["author"];
-        query.set(q);
-    }
-});
-
-Template.sorters.events({
-    "click .sort-box": function(e){
-        var field = $(e.target).data("sort");
-        var value = parseInt($(e.target).data("value"));
-        var s = {};
-
-        var checked = $(e.target).prop("checked");
-        if(checked) s[field]=value;
-        else if(!checked || field!=="date") _.extend(s, {date: -1});
-
-        $(".sort-box").each(function(){
-           $(this).prop("checked", false);
-        });
-        if(checked) $(e.target).prop("checked", true);
-
-        sort.set(s);
-    }
-});
-
-Template.options.helpers({
-   updatesClass: function(){
-       return react.get() ? "fa fa-pause" : "fa fa-play";
-   },
-    updatesVerbiage: function(){
-        return react.get() ? "Pause Updates" : "Resume Updates";
-    }
-});
-
-Template.options.events({
-   "click #disable-updates": function(e){
-       if($(e.target).prop("checked")) react.set(false);
-       else react.set(true);
-   }
 });

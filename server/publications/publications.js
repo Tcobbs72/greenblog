@@ -18,3 +18,11 @@ Meteor.publish("reports", function(){
 Meteor.publish("notifications", function(){
     return Notifications.find();
 });
+
+Meteor.publish("topics", function(){
+    return Topics.find();
+});
+
+Meteor.publish("users", function(){
+   return Meteor.users.find();
+});

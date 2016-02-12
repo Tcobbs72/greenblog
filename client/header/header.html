@@ -1,11 +1,11 @@
 <template name="header">
     <div class="row">
-        <div class="col-md-2 col-sm-2 text-left">
+        <div class="col-md-3 col-sm-4 text-left">
             {{#if loggedIn}}
                 <a href="#" class="logout-btn-js">Logout</a>
             {{/if}}
         </div>
-        <div class="col-md-4 col-md-offset-2 col-sm-4 col-sm-offset-2">
+        <div class="col-md-8 col-md-offset-11 col-sm-12 col-sm-offset-10">
             <h1 class="text-center title">GreenLife Blog</h1>
         </div>
         <div class="pull-right">
@@ -17,7 +17,7 @@
                     <a href="/reports" class="border-right {{selected "/reports"}}">Reports</a>
                 {{/if}}
                 <a href="/account/{{username}}" class="no-border {{selected "/account"}}">
-                    {{#if hasNotifications}}<i class="fa fa-exclamation"></i>{{/if}}
+                    {{#if hasNotifications}}<span class="notification-alert">{{numNotifications}}</span>{{/if}}
                     Account
                 </a>
             {{else}}

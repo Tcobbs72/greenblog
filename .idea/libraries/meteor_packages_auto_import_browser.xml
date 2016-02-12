@@ -11,6 +11,8 @@
         <item url="file://$USER_HOME$/AppData/Local/.meteor/packages/rate-limit/1.0.0/web.browser/rate-limit.js" />
         <item url="file://$USER_HOME$/AppData/Local/.meteor/packages/callback-hook/1.0.4/web.browser/hook.js" />
         <item url="file://$USER_HOME$/AppData/Local/.meteor/packages/check/1.1.0/web.browser/match.js" />
+        <item url="file://$USER_HOME$/AppData/Local/.meteor/packages/mrt_chosen-package/0.11.1/web.browser/packages/mrt_chosen-package.js" />
+        <item url="file://$USER_HOME$/AppData/Local/.meteor/packages/mrt_chosen-package/0.11.1/web.browser/packages/mrt_chosen-package/chosen.css" />
         <item url="file://$USER_HOME$/AppData/Local/.meteor/packages/ddp-client/1.2.1/web.browser/sockjs-0.3.4.js" />
         <item url="file://$USER_HOME$/AppData/Local/.meteor/packages/ddp-client/1.2.1/web.browser/random_stream.js" />
         <item url="file://$USER_HOME$/AppData/Local/.meteor/packages/ddp-client/1.2.1/web.browser/stream_client_common.js" />
@@ -167,6 +169,8 @@
       <root url="file://$USER_HOME$/AppData/Local/.meteor/packages/rate-limit/1.0.0/web.browser/rate-limit.js" />
       <root url="file://$USER_HOME$/AppData/Local/.meteor/packages/callback-hook/1.0.4/web.browser/hook.js" />
       <root url="file://$USER_HOME$/AppData/Local/.meteor/packages/check/1.1.0/web.browser/match.js" />
+      <root url="file://$USER_HOME$/AppData/Local/.meteor/packages/mrt_chosen-package/0.11.1/web.browser/packages/mrt_chosen-package.js" />
+      <root url="file://$USER_HOME$/AppData/Local/.meteor/packages/mrt_chosen-package/0.11.1/web.browser/packages/mrt_chosen-package/chosen.css" />
       <root url="file://$USER_HOME$/AppData/Local/.meteor/packages/ddp-client/1.2.1/web.browser/sockjs-0.3.4.js" />
       <root url="file://$USER_HOME$/AppData/Local/.meteor/packages/ddp-client/1.2.1/web.browser/random_stream.js" />
       <root url="file://$USER_HOME$/AppData/Local/.meteor/packages/ddp-client/1.2.1/web.browser/stream_client_common.js" />
