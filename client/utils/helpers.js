@@ -3,5 +3,9 @@ Template.registerHelper("formatDate", function(d){
 });
 
 Template.registerHelper("numNotifications", function(d){
-    return Notifications.find({userId: Meteor.user()._id, viewed: false}).count();
+    return Meteor.user() ? Notifications.find({userId: Meteor.user()._id, viewed: false}).count() : 0;
+});
+
+Template.registerHelper("loggedIn", function(d){
+    return Meteor.user();
 });

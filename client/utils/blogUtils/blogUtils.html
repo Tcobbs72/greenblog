@@ -1,5 +1,5 @@
 <template name="blogOptions">
-    <div class="row">
+    <div class="row post-options-row">
         <div class="dropdown post-options-container pull-right">
             <button class="btn btn-unstyled dropdown-toggle" type="button" data-toggle="dropdown">
                 <span>Options <i class="fa fa-cogs"></i></span>
@@ -15,7 +15,8 @@
 
 <template name="filters">
     <div class="text-left">
-        <div><h3 style="margin-bottom: 0.5em; color: #2C6700;"><u>Filters</u></h3></div>
+        <div><p style="margin-bottom: 0.5em; color: #2C6700;"><u>Filters</u></p></div>
+        {{#if loggedIn}}
         <li>
             <div class="input-group filter-container">
                 <input type="checkbox" value="None" class="css-checkbox filter-box" id="show-all" name="check" />
@@ -23,15 +24,15 @@
                 <label class="filters-label">Show who I subscribe to <i class="fa fa-users"></i></label>
             </div>
         </li>
+        {{/if}}
         <li>
             <div class="filter-container">
                 <select class="filterByTopic">
-                    <option value=""> Select A Topic </option>
+                    <option value=""> No Topic </option>
                     {{#each topics}}
                         <option value="{{name}}">{{name}}</option>
                     {{/each}}
                 </select>
-                <label class="filters-label">Filter By Topic</label>
             </div>
         </li>
     </div>
@@ -39,7 +40,7 @@
 
 <template name="sorters">
     <div class="text-left">
-        <div><h3 style="margin-bottom: 0.7em; color: #2C6700;"><u>Sort By</u></h3></div>
+        <div><p style="margin-bottom: 0.7em; color: #2C6700;"><u>Sort By</u></p></div>
         <li><div class="input-group sorter-container">
             <input type="checkbox" value="None" class="css-checkbox sort-box" id="date-ascending" data-sort="date" data-value="1" name="check" />
             <label for="date-ascending" class="css-label lite-green-check"></label>
@@ -53,20 +54,20 @@
         <li><div class="input-group sorter-container">
             <input type="checkbox" value="None" class="css-checkbox sort-box" id="likes" data-sort="numLikes"  data-value="-1" name="check" />
             <label for="likes" class="css-label lite-green-check"></label>
-            <label class="sort-label"># of likes <i class="fa fa-thumbs-up"></i></label>
+            <label class="sort-label"># likes <i class="fa fa-thumbs-up"></i></label>
         </div></li>
         <li><div class="input-group sorter-container">
             <input type="checkbox" value="None" class="css-checkbox sort-box" id="dislikes" data-sort="numDislikes"  data-value="-1" name="check" />
             <label for="dislikes" class="css-label lite-green-check"></label>
-            <label class="sort-label"># of dislikes <i class="fa fa-thumbs-down"></i></label>
+            <label class="sort-label"># dislikes <i class="fa fa-thumbs-down"></i></label>
         </div></li>
     </div>
 </template>
 
 <template name="options">
     <div class="text-left">
-        <div><h3 style="margin-bottom: 0.7em; color: #2C6700;"><u>Options</u></h3></div>
-        <li><div class="input-group sorter-container">
+        <div><p style="margin-bottom: 0.7em; color: #2C6700;"><u>Options</u></p></div>
+        <li><div class="input-group sorter-container" style="width: 100%;">
             <input type="checkbox" value="None" class="css-checkbox opt-box" id="disable-updates" name="check" />
             <label for="disable-updates" class="css-label lite-green-check"></label>
             <label class="opts-label">{{updatesVerbiage}} <i class="{{updatesClass}}"></i></label>

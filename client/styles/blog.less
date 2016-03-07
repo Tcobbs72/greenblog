@@ -1,0 +1,154 @@
+.blog-post-container{
+  margin-bottom: 1em;
+  margin-left: 1em;
+  margin-right: 1em;
+  input{
+    height: 1.5em;
+    font-size: 1.1em;
+    //margin-right: 1em;
+  }
+  .new-post-js{
+    width: 100%;
+  }
+  .new-post-container{
+    float: left;
+    margin-bottom: 1em;
+    width: 100%;
+  }
+  .new-post-topic-js{
+    height: 1.2em;
+  }
+  .post-anon-container{
+    width: 100%;
+    text-align: left;
+  }
+}
+
+.top-row, .middle-row, .bottom-row{
+  background-color: darkgrey;
+  width: 100%;
+  padding: 0.3em 0.5em;
+  float: left;
+}
+
+.add-comment-container{
+  height: 1.5em;
+  font-size: 1em;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  width: 100%;
+  span{
+    height: 2em;
+  }
+  input{
+    height: 2em;
+    font-size: 0.9em;
+    padding: 0;
+    padding-left: 8px;
+    padding-top: 2px;
+  }
+}
+
+.hide-scrollbar{
+  margin-left: 3%;
+  width: 94%;
+  overflow: hidden;
+}
+
+.posts-container{
+  overflow-x: hidden;
+  text-align: left;
+  width: 100%;
+  min-height: 20em;
+}
+
+.post{
+  margin-bottom: 1em;
+  margin-right: 0.5em;
+  margin-left: 0.5em;
+  background-color: #E5E4D7;
+  padding: 3px 3px 3px 3px;
+  font-size: 1em;
+  width: 98%;
+  float: left;
+}
+
+.postDate{
+  text-align: right;
+  font-size: 0.7em;
+}
+
+.like-post{
+  color: dimgrey;
+  margin-right: 0.3em;
+  &:hover{
+    color: #92CD00;
+  }
+}
+
+.like-post-selected{
+  color: #92CD00;
+}
+
+.dislike-post{
+  color: dimgrey;
+  margin-right: 0.3em;
+  &:hover{
+    color: #b6332c;
+  }
+}
+
+.dislike-post-selected{
+  color: #b6332c;
+}
+
+.show-comments{
+  color: dimgrey;
+  margin-right: 0.3em;
+}
+
+.post-options{
+  display: inline-block;
+  button{
+    padding: 0;
+    background: transparent;
+    font-size: 1em;
+  }
+}
+
+.post-comments{
+  display: none;
+}
+
+
+.author{
+  color: #2C6700;
+}
+
+.blog-text, .post-text{
+  width: 100%;
+  overflow-x: hidden;
+  margin-bottom: 0.5em;
+  font-size: 0.8em;
+}
+
+.submit-post-js{
+  margin-top: 0.5em;
+  margin-bottom: 1em;
+  background-color: #92CD00;
+  color: white !important;
+  padding: 0.2em 0.4em;
+  border: 3px solid #2C6700;
+  font-size: 1em;
+  font-weight: 500;
+  &:hover{
+    background-color: #2C6700;
+    border: 3px solid #92CD00;
+    text-decoration: none;
+    color: white;
+  }
+  &:focus{
+    text-decoration: none;
+    color: white;
+  }
+}

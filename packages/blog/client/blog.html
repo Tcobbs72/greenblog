@@ -1,0 +1,114 @@
+<template name="blog">
+    <div class="text-center">
+        <div class="border-left">
+            {{#if doneLoading}}
+                <div class="posts-container">
+                    {{> blogOptions}}
+                    {{#if loggedIn}}
+                    {{> newPost}}
+                    {{/if}}
+                    {{#if postsExist}}
+                        {{#each posts}}
+                            {{> blogPost}}
+                        {{/each}}
+                    {{else}}
+                        <h3><b><i>There are no posts! :(</i></b></h3>
+                    {{/if}}
+                </div>
+            {{else}}
+                <h3 class="text-center"><i class="fa fa-cog fa-spin"></i> Loading Posts and Comments...</h3>
+            {{/if}}
+        </div>
+    </div>
+</template>
+
+<template name="newPost">
+    <div class="row blog-post-container">
+        <div class="new-post-container">
+            <div class="top-row pull-right text-right">
+                <select class="new-post-topic-js">
+                    <option value="" disabled> Select A Topic </option>
+                    {{#each topics}}
+                        <option value="{{name}}">{{name}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="middle-row">
+                <textarea cols="50" rows="4" class="new-post-js" placeholder="What's on your mind?"></textarea>
+            </div>
+            <div class="bottom-row">
+                <div class="col-md-22 col-sm-22 col-xs-22 col-xxs-22">
+                    <div class="post-anon-container">
+                        <input type="checkbox" value="None" class="css-checkbox pull-right" id="post-anonymous" name="check" />
+                        <label for="post-anonymous" class="css-label lite-green-check"></label>
+                        <label> Post Anonymously </label>
+                    </div>
+                </div>
+                <div class="col-md-10 col-sm-8 col-xs-8 col-xxs-5 pull-right" style="text-align: right;">
+                    <a href="#" class="submit-post-js">Post</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template name="blogPost">
+    <div class="row post" id="{{_id}}">
+        <div class="col-md-28 col-sm-28 col-xs-28 col-xxs-28">
+            {{#if anonymous}}
+                <b class="author">{{formatAuthor this}}</b> | <b>{{formatDate date}}</b>
+            {{else}}
+                <a href="/account/{{author}}" class="author"><b>{{formatAuthor this}}</b></a> | <b>{{formatDate date}}</b>
+            {{/if}}
+            <div class="post-text"><b>{{text}}</b></div>
+            <div class="post-comments">
+                {{#if commentsExist comments}}
+                    {{#each getComments comments}}
+                        {{> comment}}
+                    {{/each}}
+                {{else}}
+                    <h6><b><i>There are no comments yet!</i></b></h6>
+                {{/if}}
+            </div>
+            {{#if loggedIn}}
+                <div class="input-group add-comment-container">
+                    <input type="text" class="add-comment-js form-control" placeholder="Add Comment" data-postId="{{_id}}">
+                </div>
+            {{/if}}
+        </div>
+        <div class="col-md-8 col-sm-8 col-xs-8 col-xxs-8 postDate">
+            <div>
+                {{numLikes}} <a href="#" class="like-post {{likedPost _id}}" data-postId="{{_id}}"><i class="fa fa-thumbs-up"></i></a>
+                {{numDislikes}} <a href="#" class="dislike-post {{dislikedPost _id}}" data-postId="{{_id}}"><i class="fa fa-thumbs-down"></i></a>
+                {{numComments comments}} <a href="#" class="show-comments" data-postId="{{_id}}"><i class="fa fa-comment"></i></a>
+                {{#if loggedIn}}
+                    <div class="dropdown post-options">
+                        <button class="btn btn-unstyled dropdown-toggle" type="button" data-toggle="dropdown">
+                            <span><i class="fa fa-cogs"></i></span>
+                        </button>
+                        <ul class="dropdown-menu pull-right">
+                            {{#if iPostedThis author}}
+                                <li><a href="#" class="delete-post" data-postId="{{_id}}">
+                                    <i class="fa fa-times"></i> Delete this post
+                                </a></li>
+                            {{else}}
+                                <li><a href="#" class="report-post" data-postId="{{_id}}">
+                                    <i class="fa fa-flag"></i> Report this post
+                                </a></li>
+                                {{#unless anonymous}}
+                                    <li><a href="#" class="block-user" data-author="{{author}}">
+                                        <i class="fa fa-ban"></i> Block this user
+                                    </a></li>
+                                    <li><a href="#" class="subscribe-user" data-author="{{author}}">
+                                        <i class="fa fa-check"></i> Subscribe to this user
+                                    </a></li>
+                                {{/unless}}
+                            {{/if}}
+                        </ul>
+                    </div>
+                {{/if}}
+            </div>
+            <div class="post-topic">Topic - {{topic}}</div>
+        </div>
+    </div>
+</template>

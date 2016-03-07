@@ -1,0 +1,114 @@
+<template name="reports">
+    <div class="page-container text-center">
+        <div>
+            <div class="hide-scrollbar border-left">
+                {{#if notReviewedReportsExist}}
+                    <div class="reports-container">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Original Author</th>
+                                <th>Date</th>
+                                <th>Reason</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>ID</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{#each nonReviewedReports}}
+                                {{> report}}
+                            {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                {{else}}
+                    <h4 style="margin-top: 1em;"><b><i>There are no not reviewed posts!</i></b></h4>
+                {{/if}}
+                {{#if reviewedReportsExist}}
+                    <div class="reports-container">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Original Author</th>
+                                <th>Date</th>
+                                <th>Reason</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>ID</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{#each reviewedReports}}
+                                {{> report}}
+                            {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                {{else}}
+                    <h4 style="margin-top: 1em;"><b><i>There are no reviewed posts!</i></b></h4>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+    <div id="reportModalNotReviewed" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            {{#with selectedPost}}
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Original {{type}} by {{author}}</h4>
+                </div>
+                <div class="modal-body">
+                    <p>{{text}}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info take-action" data-dismiss="modal" data-action="Dismiss">Dismiss Report</button>
+                    <button type="button" class="btn btn-danger take-action" data-dismiss="modal" data-action="Remove">Remove {{type}}</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+            {{/with}}
+        </div>
+    </div>
+    <div id="reportModalReviewed" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            {{#with selectedUser}}
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Action on {{username}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>This user has been reported {{profile.timesReported}} times</p>
+                        <p>This user has been warned {{profile.timesWarned}} times</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-info take-action-reviewed" data-dismiss="modal" data-action="Dismiss">Do Nothing</button>
+                        <button type="button" class="btn btn-danger take-action-reviewed" data-dismiss="modal" data-action="Warn">Warn</button>
+                        <button type="button" class="btn btn-danger take-action-reviewed" data-dismiss="modal" data-action="Ban">Ban User</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            {{/with}}
+        </div>
+    </div>
+</template>
+
+<template name="report">
+    <tr>
+        <td>{{author}}</td>
+        <th>{{formatDate date}}</th>
+        <th>{{reason}}</th>
+        <th>{{type}}</th>
+        <th>{{status}}</th>
+        <th><a href="#" class="show-post"
+               data-status="{{status}}"
+               data-author="{{author}}"
+               data-postid="{{postid}}"
+               data-type="{{type}}"
+               data-reportid="{{_id}}">
+            {{postid}}
+        </a></th>
+    </tr>
+</template>

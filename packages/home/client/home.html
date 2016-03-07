@@ -1,0 +1,33 @@
+<template name="home">
+    <div class="about-image">
+        <div class="about-info">
+            <div class="text-center">
+                <p><b>We all create waste on Earth. <br>
+                    Figure out how much waste you create and learn from others on ways how to reduce your waste.<br>
+                    Email us questions and comments on how we could improve the site
+                </b>
+                </p>
+            </div>
+        </div>
+        {{#if notLoggedIn}}
+            <div class="sign-up text-center">
+                <a href="/signup" class="btn signup-btn">Create Free Account</a>
+            </div>
+        {{else}}
+            <br>
+            <b><h5 class="welcome-message">Welcome, {{username}}</h5></b>
+        {{/if}}
+    </div>
+    {{> divider image="fa fa-calculator"}}
+    <div class="page-info text-center">
+        <h2><b>Waste Calculator</b></h2>
+    </div>
+    {{> divider image="fa fa-pencil-square-o"}}
+    <div class="page-info text-center">
+        <h2><b>Blog</b></h2>
+    </div>
+    {{> divider image="fa fa-user"}}
+    <div class="page-info text-center">
+        <h2><b>Account</b></h2>
+    </div>
+</template>

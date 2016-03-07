@@ -31,3 +31,15 @@ aldeed:simple-schema
 aldeed:collection2
 momentjs:moment
 mrt:chosen-package
+
+# local packages
+about
+account
+blog
+calculator
+comments
+header
+home
+login
+reports
+signup

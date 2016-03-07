@@ -1,0 +1,48 @@
+<template name="header">
+    <div class="row header-row">
+        <div class="col-md-12 col-sm-25 col-xs-25 col-xxs-25 text-left">
+            <h1 class="title">GreenLife Blog</h1>
+        </div>
+        <div class="col-md-24 col-sm-4 col-xs-4 col-xxs-5 pull-right links">
+            <div class="row">
+                <div class="main-menu-nav">
+                        <a href="/home" class="border-right {{selected "/home"}}">Home</a>
+                        <a href="/blog" class="border-right {{selected "/blog"}}">Blog</a>
+                        <a href="/calculator" class="border-right {{selected "/calculator"}}">Waste Calculator</a>
+                        {{#if admin}}
+                            <a href="/reports" class="border-right {{selected "/reports"}}">Reports</a>
+                        {{/if}}
+                    {{#if loggedIn}}
+                        <a href="/account/{{username}}" class="border-right {{selected "/account"}}">
+                            {{#if hasNotifications}}<span class="notification-alert">{{numNotifications}}</span>{{/if}}
+                            Account
+                        </a>
+                        <a href="#" class="logout-btn-js">Logout</a>
+                    {{else}}
+                        <a href="/login" class="{{selected "/login"}}">Login</a>
+                    {{/if}}
+                </div>
+                <div class="dropdown main-menu-dropdown">
+                    <button class="btn dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
+                    <ul class="dropdown-menu pull-right">
+                            <li><a href="/home" class="{{selected "/home"}}"><i class="fa fa-home"></i> Home</a></li>
+                            <li><a href="/blog" class="{{selected "/blog"}}"><i class="fa fa-pencil-square-o"></i> Blog</a></li>
+                            <li><a href="/calculator" class="{{selected "/calculator"}}"><i class="fa fa-calculator"></i> Waste Calculator</a></li>
+                            {{#if admin}}
+                                <li><a href="/reports" class="{{selected "/reports"}}"><i class="fa fa-flag"></i> Reports</a></li>
+                            {{/if}}
+                        {{#if loggedIn}}
+                            <li><a href="/account/{{username}}" class="{{selected "/account"}}">
+                                {{#if hasNotifications}}<span class="notification-alert">{{numNotifications}}</span>{{/if}}
+                                <i class="fa fa-user"></i> Account
+                            </a></li>
+                            <li><a href="#" class="logout-btn-js"><i class="fa fa-sign-out"></i> Logout</a></li>
+                        {{else}}
+                            <li><a href="/login" class="{{selected "/login"}}"><i class="fa fa-sign-in"></i> Login</a></li>
+                        {{/if}}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

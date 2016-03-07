@@ -1,6 +1,6 @@
 Meteor.publish("posts", function(user){
     if(user) return Posts.find({author: {$nin: user.profile.blocked}});
-    this.ready();
+    else return Posts.find({})
 });
 
 Meteor.publish("comments", function(){
@@ -8,7 +8,7 @@ Meteor.publish("comments", function(){
         var user = Meteor.users.findOne({_id: this.userId});
         if(user) return Comments.find({author: {$nin: user.profile.blocked}});
     }
-    this.ready();
+    else return Comments.find({});
 });
 
 Meteor.publish("reports", function(){
@@ -16,7 +16,7 @@ Meteor.publish("reports", function(){
 });
 
 Meteor.publish("notifications", function(){
-    return Notifications.find();
+    return Notifications.find({userId: this.userId});
 });
 
 Meteor.publish("topics", function(){
